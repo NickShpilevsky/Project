@@ -1,0 +1,16 @@
+.Bar {
+    background: #bdbdbd;
+}
+.filterButton {
+    margin-left: 10%;
+}
+.filterWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    border: 3px solid #3e2723;
+    background: #eeeeee;
+    margin-top: 10px;
+    margin-left: 5px;
+    padding: 0 0 10px 10px;
+}

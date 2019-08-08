@@ -1,0 +1,27 @@
+.card {
+    /*width: 350px;*/
+    border: 3px solid #3e2723;
+    background: #eeeeee;
+    margin-top: 10px;
+    margin-left: 5px;
+    padding: 5px 10px;
+    font-family: Helvetica;
+    float: left;
+}
+#buttonsDiv {
+    display: flex;
+}
+.both {
+    display: flex;
+    margin: auto;
+}
+.text {
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+
+.noteText {
+    width: 200px;
+    word-wrap: break-word;
+}
