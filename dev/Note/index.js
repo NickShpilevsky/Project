@@ -10,14 +10,15 @@ class Note extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            name: this.props.name,
-            company: this.props.company,
-            eMail: this.props.eMail,
-            phoneNumber: this.props.phoneNumber,
-            status: this.props.status,
-            category: this.props.category,
-            textArea: this.props.textArea,
-            photo: this.props.photo,
+            _id: this.props._id,
+            name: this.props.name || '',
+            company: this.props.company || '',
+            eMail: this.props.eMail || '',
+            phoneNumber: this.props.phoneNumber || '',
+            status: this.props.status || '',
+            category: this.props.category || '',
+            textArea: this.props.textArea || '',
+            photo: this.props.photo || '',
             isChanging: false,
             buttonTitle: 'change Note',
             changeButton: false,
@@ -29,7 +30,8 @@ class Note extends PureComponent {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.name !== this.props.name ||
+        if(nextProps._id !== this.props._id ||
+            nextProps.name !== this.props.name ||
             nextProps.company !== this.props.company ||
             nextProps.eMail !== this.props.eMail ||
             nextProps.phoneNumber !== this.props.phoneNumber ||
@@ -39,6 +41,7 @@ class Note extends PureComponent {
             nextProps.photo !== this.props.photo) {
             this.setState({
                 isChanging: false,
+                _id: nextProps._id,
                 name: nextProps.name,
                 company: nextProps.company,
                 eMail: nextProps.eMail,
@@ -58,8 +61,21 @@ class Note extends PureComponent {
         });
     }
 
-    remove() {
-        this.props.removeNote(this.props.id);
+    remove(e) {
+        e.preventDefault();
+        this.props.removeNote(this.state._id);
+        const note = {
+            _id: this.state._id,
+        };
+        const options = {
+            method: 'delete',
+            headers: new Headers({
+                id: this.state._id,
+                Accept: 'application/json',
+                "Content-Type": "application/json"
+            }),
+        };
+        fetch("http://localhost:5000/people/" + String(this.state._id), options);
     }
 
     showAllText() {
@@ -69,15 +85,15 @@ class Note extends PureComponent {
     }
 
     render() {
-        const { id, updateNote } = this.props;
+        const { _id, updateNote } = this.props;
         const { isChanging, buttonTitle, name, company, eMail, phoneNumber, status, category, textArea, photo, textButton } = this.state;
         return (
 
-            <div key={id} className="card">
+            <div key={_id} className="card">
                 {
                     isChanging ? (
                         <Form
-                            defaultId={id}
+                            defaultId={_id}
                             oldName={name}
                             oldCompany={company}
                             oldEMail={eMail}
@@ -103,12 +119,12 @@ class Note extends PureComponent {
                                     <p>Status: {status}</p>
                                     <p>Categories:
                                         {
-                                            category.map(item => (item + '\n'))
+                                            category === '' ? '' : category.map(item => (item + '\n'))
                                         }
                                     </p>
                                     {
                                         textButton === 'show more' ?(
-                                            <p>{textArea.slice(1, 15)}...</p>
+                                            <p>{textArea === '' || undefined ? 'note is empty' : textArea.slice(1, 15) + '...'}</p>
                                         ) : (
                                             <div className="noteText">{textArea}</div>
                                         )

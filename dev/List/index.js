@@ -7,8 +7,8 @@ const List = ({ peopleList, updateNote, showForm, removeNote }) => { //данн�
             <React.Fragment>
                 {
                     peopleList.map(note => (
-                        <Note key={note.id}
-                              id={note.id}
+                        <Note key={note._id}
+                              _id={note._id}
                               name={note.name}
                               company={note.company}
                               eMail={note.eMail}

@@ -38,6 +38,23 @@ class Home extends PureComponent {
         this.hideFilter = this.hideFilter.bind(this);
     }
 
+    componentDidMount() {
+        fetch("http://localhost:5000/people")
+            .then(res => res.json())
+            .then(
+                (gotPeople) => {
+                    this.setState({
+                        peopleList: gotPeople,
+                    });
+                },
+                (error) => {
+                    this.setState({
+                        error,
+                    });
+                },
+            )
+    }
+
     showForm() {
         this.setState({
             showFilter: this.state.showFilter ? this.showFilter() : null,
@@ -63,14 +80,14 @@ class Home extends PureComponent {
     updateNote(note) {
         this.setState({
             peopleList: this.state.peopleList.map(item => (
-                item.id === note.id ? note : item
+                item._id === note._id ? note : item
             )),
         });
     }
 
     removeNote(id) {
         this.setState({
-            peopleList: this.state.peopleList.filter(note => note.id !== id)
+            peopleList: this.state.peopleList.filter(note => note._id !== id),
         });
     }
 

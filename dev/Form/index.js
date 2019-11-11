@@ -12,7 +12,7 @@ class Form extends PureComponent {
         super(props);
         const { defaultId, oldName, oldCompany, oldEMail, oldPhoneNumber, oldStatus, oldTextArea, oldPhoto } = this.props;
         this.state = {
-            id: defaultId || Date.now(),
+            _id: defaultId || Date.now(),
             name: oldName || '',
             company: oldCompany || '',
             eMail: oldEMail || '',
@@ -45,7 +45,6 @@ class Form extends PureComponent {
         this.setState({
             photo: e.target.value,
         });
-        console.log(e.target.value);
     }
 
     takeCategory(category) {
@@ -58,7 +57,7 @@ class Form extends PureComponent {
         e.preventDefault();
         const { name, company, eMail, phoneNumber, status, category, textArea, photo } = this.state;
         const note = {
-            id: this.props.defaultId || Date.now(),
+            _id: this.props.defaultId || 'peopleList_' + Date.now(), //Error: Argument passed in must be a single String of 12 bytes or a string of 24 hex characters значит, что ID, где бы он ни был задан, должен содержать 24 символа
             name,
             company,
             eMail,
@@ -69,6 +68,29 @@ class Form extends PureComponent {
             photo,
         };
         this.props.action(note);
+
+        if(this.props.sendButtonTitle === 'create') {
+            const options = {
+                method: 'post',
+                headers: new Headers({
+                    Accept: 'application/json',
+                    "Content-Type": "application/json"
+                }),
+                body: JSON.stringify(note),
+            };
+            fetch("http://localhost:5000/people", options);
+        } else {
+            const options = {
+                method: 'put',
+                headers: new Headers({
+                    Accept: 'application/json',
+                    "Content-Type": "application/json"
+                }),
+                body: JSON.stringify(note),
+            };
+            fetch("http://localhost:5000/people", options);
+        }
+
         if(this.props.showForm) {
             this.props.showForm();
         }
@@ -78,9 +100,9 @@ class Form extends PureComponent {
     }
 
     render() {
-        if(document.getElementById('photoLoader')) {
-            console.log(document.getElementById('photoLoader').value);
-        }
+        // if(document.getElementById('photoLoader')) {
+            // console.log(document.getElementById('photoLoader').value);
+        // }
         const { sendButtonTitle, oldCategory } = this.props;
         let placeHolder = sendButtonTitle === 'create' ? 'enter' : 'change';
         const { name, company, eMail, phoneNumber, textArea, photo } = this.state;

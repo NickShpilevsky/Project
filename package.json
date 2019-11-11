@@ -36,5 +36,6 @@
     "@material-ui/styles": "^4.3.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
-  }
+  },
+  "proxy": 5000
 }
