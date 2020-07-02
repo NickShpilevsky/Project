@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
 
+import TextField from '@material-ui/core/TextField';
+
 import './style.css';
 
-import TextField from '@material-ui/core/TextField';
 import { MyButton } from '../UIComponents/MyButton';
 import RadioButtonsGroup from '../UIComponents/Radio';
 import CheckboxesGroup from '../UIComponents/CheckBox';
@@ -10,7 +11,7 @@ import CheckboxesGroup from '../UIComponents/CheckBox';
 class Form extends PureComponent {
     constructor(props) {
         super(props);
-        const { defaultId, oldName, oldCompany, oldEMail, oldPhoneNumber, oldStatus, oldTextArea, oldPhoto } = this.props;
+        const { defaultId, oldName, oldCompany, oldEMail, oldPhoneNumber, oldStatus, oldTextArea } = this.props;
         this.state = {
             _id: defaultId || Date.now(),
             name: oldName || '',
@@ -20,13 +21,11 @@ class Form extends PureComponent {
             status: oldStatus || '',
             category: [],
             textArea: oldTextArea || '',
-            photo: oldPhoto || '',
         };
         this.textChange = this.textChange.bind(this);
         this.submitForm = this.submitForm.bind(this);
         this.takeStatus = this.takeStatus.bind(this);
         this.takeCategory = this.takeCategory.bind(this);
-        this.takePhoto = this.takePhoto.bind(this);
     }
 
     textChange(e) {
@@ -41,12 +40,6 @@ class Form extends PureComponent {
         });
     }
 
-    takePhoto(e) {
-        this.setState({
-            photo: e.target.value,
-        });
-    }
-
     takeCategory(category) {
         this.setState({
             category: [...this.state.category, category],
@@ -57,7 +50,7 @@ class Form extends PureComponent {
         e.preventDefault();
         const { name, company, eMail, phoneNumber, status, category, textArea, photo } = this.state;
         const note = {
-            _id: this.props.defaultId || 'peopleList_' + Date.now(), //Error: Argument passed in must be a single String of 12 bytes or a string of 24 hex characters значит, что ID, где бы он ни был задан, должен содержать 24 символа
+            _id: this.props.defaultId || 'peopleList_' + Date.now(),
             name,
             company,
             eMail,
@@ -65,7 +58,6 @@ class Form extends PureComponent {
             status: status || 'unnecessary',
             category,
             textArea,
-            photo,
         };
         this.props.action(note);
 
@@ -100,12 +92,9 @@ class Form extends PureComponent {
     }
 
     render() {
-        // if(document.getElementById('photoLoader')) {
-            // console.log(document.getElementById('photoLoader').value);
-        // }
-        const { sendButtonTitle, oldCategory } = this.props;
+        const { sendButtonTitle } = this.props;
         let placeHolder = sendButtonTitle === 'create' ? 'enter' : 'change';
-        const { name, company, eMail, phoneNumber, textArea, photo } = this.state;
+        const { name, company, eMail, phoneNumber, textArea } = this.state;
         return (
             <div className="wrapper">
                 <form className="form" onSubmit={this.submitForm}>
@@ -138,13 +127,11 @@ class Form extends PureComponent {
                         onChange={this.textChange}
                         margin="normal"
                     />
-                    {/*<UploadButton title="photo">rthrt</UploadButton>*/}
-                    <input type="file" id="photo" name="photo" onChange={this.takePhoto} />
                     </div>
                     <div className="rightWrapper">
                     <RadioButtonsGroup takeStatus={this.takeStatus}/>
                     <CheckboxesGroup takeCategory={this.takeCategory} />
-                    <MyButton action={this.submitForm} title={sendButtonTitle} variant="contained" color="primary"></MyButton>
+                    <MyButton action={this.submitForm} title={sendButtonTitle} variant="contained" color="primary"/>
                     </div>
                     <textarea id="textArea" onChange={this.textChange} cols="30" rows="5" placeholder="Write some notes">{textArea}</textarea>
                 </form>

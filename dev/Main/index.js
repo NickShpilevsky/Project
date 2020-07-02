@@ -104,46 +104,42 @@ class Home extends PureComponent {
     }
 
     filter() {
-        const { peopleList, status, category } = this.state;
+        const {peopleList, status, category} = this.state;
+        let array = [];
+        let statusArray = [];
         let check;
-        let firstCheck = [];
-        if(category.length) {
+        if (category.length) {
             for (let i = 0; i < peopleList.length; i++) {
                 check = 0;
-                for (let j = 0; j < category.length; j++) {
-                    for(let t = 0; t < peopleList[i].category.length; t++) {
-                        if (category[j] === peopleList[i].category[t]) {
-                            ++check;
+                if (peopleList[i].category.length === category.length) {
+                    for (let j = 0; j < peopleList[i].category.length; j++) {
+                        for (let t = 0; t < category.length; t++) {
+                            if (peopleList[i].category[j] === category[t]) {
+                                ++check;
+                            }
                         }
                     }
-                }
-                console.log(check);
-                console.log(category.length);
-                if (check === category.length && status !== '') {
-                    firstCheck.push(peopleList[i]);
-                }
-                if(check === category.length && status === '') {
-                    this.setState({
-                        filteredList: [...this.state.filteredList, peopleList[i]],
-                    });
+                    if (peopleList[i].category.length === check) {
+                        array.push(peopleList[i]);
+                    }
                 }
             }
         }
-        if(status !== '' && category.length) {
-            console.log('mistake');
-            this.setState({
-                filteredList: firstCheck.filter(item => (item.status === status ? item : null)),
-            });
-        }
-        if(status !== '' && !category.length) {
-            for(let i = 0; i < peopleList.length; i++) {
-                if(peopleList[i].status === status) {
-                    this.setState({
-                        filteredList: [...this.state.filteredList, peopleList[i]],
-                    });
+        if (status) {
+            let statusArray = peopleList;
+            if (category.length) {
+                statusArray = array;
+            }
+            array = [];
+            for (let i = 0; i < statusArray.length; i++) {
+                if (statusArray[i].status === status) {
+                    array.push(statusArray[i]);
                 }
             }
         }
+        this.setState({
+            filteredList: [...this.state.filteredList, ...array],
+        });
     }
 
     hideFilter() {
@@ -163,8 +159,8 @@ class Home extends PureComponent {
                         <Typography variant="h6" color="inherit">
                             List
                         </Typography>
-                        <MyButton action={this.showForm} title={buttonTitle}></MyButton>
-                        <MyButton className="filterButton" action={this.showFilter} title={filterButton}></MyButton>
+                        <MyButton action={this.showForm} title={buttonTitle} />
+                        <MyButton className="filterButton" action={this.showFilter} title={filterButton} />
                     </Toolbar>
                 </AppBar>
                 {
@@ -186,8 +182,8 @@ class Home extends PureComponent {
                             <CheckBox takeCategory={this.takeCategory}/>
                             </div>
                             <div className="both">
-                                <MyButton action={this.filter} title={'filter'}></MyButton>
-                                <MyRemoveButton action={this.hideFilter} title={'cancel'}></MyRemoveButton>
+                                <MyButton action={this.filter} title={'filter'} />
+                                <MyRemoveButton action={this.hideFilter} title={'cancel'} />
                             </div>
                         </div>
                     ) : (

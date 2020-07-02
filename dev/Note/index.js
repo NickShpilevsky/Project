@@ -18,7 +18,6 @@ class Note extends PureComponent {
             status: this.props.status || '',
             category: this.props.category || '',
             textArea: this.props.textArea || '',
-            photo: this.props.photo || '',
             isChanging: false,
             buttonTitle: 'change Note',
             changeButton: false,
@@ -37,8 +36,7 @@ class Note extends PureComponent {
             nextProps.phoneNumber !== this.props.phoneNumber ||
             nextProps.status !== this.props.status ||
             nextProps.category !== this.props.category ||
-            nextProps.textArea !== this.props.textArea ||
-            nextProps.photo !== this.props.photo) {
+            nextProps.textArea !== this.props.textArea) {
             this.setState({
                 isChanging: false,
                 _id: nextProps._id,
@@ -49,7 +47,6 @@ class Note extends PureComponent {
                 status: nextProps.status,
                 category: nextProps.category,
                 textArea: nextProps.textArea,
-                photo: nextProps.photo,
             });
         }
     }
@@ -64,9 +61,6 @@ class Note extends PureComponent {
     remove(e) {
         e.preventDefault();
         this.props.removeNote(this.state._id);
-        const note = {
-            _id: this.state._id,
-        };
         const options = {
             method: 'delete',
             headers: new Headers({
@@ -88,24 +82,28 @@ class Note extends PureComponent {
         const { _id, updateNote } = this.props;
         const { isChanging, buttonTitle, name, company, eMail, phoneNumber, status, category, textArea, photo, textButton } = this.state;
         return (
-
             <div key={_id} className="card">
                 {
                     isChanging ? (
-                        <Form
-                            defaultId={_id}
-                            oldName={name}
-                            oldCompany={company}
-                            oldEMail={eMail}
-                            oldPhoneNumber={phoneNumber}
-                            oldStatus={status}
-                            oldCategory={category}
-                            oldTextArea={textArea}
-                            oldPhoto={photo}
-                            sendButtonTitle={'change'}
-                            changeButtonTitle={this.update}
-                            action={updateNote}
-                        />
+                        <>
+                            <div id="buttonsDiv">
+                                <MyButton action={this.update} title={buttonTitle} />
+                                <MyRemoveButton action={this.remove} title={'remove Note'} />
+                            </div>
+                            <Form
+                                defaultId={_id}
+                                oldName={name}
+                                oldCompany={company}
+                                oldEMail={eMail}
+                                oldPhoneNumber={phoneNumber}
+                                oldStatus={status}
+                                oldCategory={category}
+                                oldTextArea={textArea}
+                                sendButtonTitle={'change'}
+                                changeButtonTitle={this.update}
+                                action={updateNote}
+                            />
+                        </>
                     ) : (
                         <div>
                             <div className="both">
@@ -129,17 +127,16 @@ class Note extends PureComponent {
                                             <div className="noteText">{textArea}</div>
                                         )
                                     }
-                                    <MyButton action={this.showAllText} title={textButton} ></MyButton>
+                                    <MyButton action={this.showAllText} title={textButton} />
                                 </div>
                             </div>
-                            <img src={photo} />
+                            <div id="buttonsDiv">
+                                <MyButton action={this.update} title={buttonTitle} />
+                                <MyRemoveButton action={this.remove} title={'remove Note'} />
+                            </div>
                         </div>
                     )
                 }
-                <div id="buttonsDiv">
-                    <MyButton action={this.update} title={buttonTitle} ></MyButton>
-                    <MyRemoveButton action={this.remove} title={'remove Note'}></MyRemoveButton>
-                </div>
             </div>
         );
     }

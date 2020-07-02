@@ -1,10 +1,10 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -24,11 +24,6 @@ export default function CheckboxesGroup( {takeCategory} ) {
     });
 
     const { Art, Technologies, Nature } = state;
-
-    // for(let i = 0; i < checked.length; i++) {
-    //     console.log(checked[i]);
-    //     setState({ ...state, [checked[i]]: true });
-    // }
 
     const handleChange = name => event => {
         setState({ ...state, [name]: event.target.checked });

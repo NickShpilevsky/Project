@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --content-base site --port 9090",
+    "dev": "webpack-dev-server --content-base site --port 3000",
     "build": "rm -rf site && cross-env NODE_ENV=production webpack"
   },
   "keywords": [],

@@ -2,7 +2,7 @@ import React from 'react';
 
 import Note from "../Note";
 
-const List = ({ peopleList, updateNote, showForm, removeNote }) => { //данные берем из пропсов, пишем так вместо {...} = props;
+const List = ({ peopleList, updateNote, showForm, removeNote }) => {
         return (
             <React.Fragment>
                 {
@@ -16,7 +16,6 @@ const List = ({ peopleList, updateNote, showForm, removeNote }) => { //данн�
                               status={note.status}
                               category={note.category}
                               textArea={note.textArea}
-                              photo={note.photo}
                               updateNote={updateNote}
                               showForm={showForm}
                               removeNote={removeNote}

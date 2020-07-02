@@ -64,19 +64,7 @@ function MyRemoveButton({action, title}) {
     );
 }
 
-function UploadButton() {
-    const classes = useStyles();
-    return (
-        <label htmlFor="contained-button-file">
-            <Button variant="contained" component="span" className={classes.button}>
-                eth
-            </Button>
-        </label>
-    );
-}
-
 export {
     MyButton,
     MyRemoveButton,
-    UploadButton,
 }

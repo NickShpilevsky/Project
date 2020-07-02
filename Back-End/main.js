@@ -6,7 +6,6 @@ const cors = require('cors');
 const app = express();
 const jsonParser = express.json();
 app.use(cors());
-// const port = 3000;
 
 const mongoClient = new MongoClient('mongodb://localhost:27017/', {useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -25,7 +24,7 @@ mongoClient.connect( function(err, client) {
     });
 });
 
-app.get('/people', function(req, res) {                         //GET all clients
+app.get('/people', function(req, res) {
     const collection = req.app.locals.collection;
     collection.find({}).toArray(function(err, people) {
         if(err) {
@@ -35,7 +34,7 @@ app.get('/people', function(req, res) {                         //GET all client
     });
 });
 
-app.get('/people/:id', function(req, res) {                     //GET certain person
+app.get('/people/:id', function(req, res) {
     const id = new objectId(req.params.id);
     const collection = req.app.locals.collection;
     collection.findOne({_id: id}, function(err, person) {
@@ -46,7 +45,7 @@ app.get('/people/:id', function(req, res) {                     //GET certain pe
     });
 });
 
-app.post('/people', jsonParser, function(req, res) {             //INSERT person
+app.post('/people', jsonParser, function(req, res) {
     if(!req.body) {
         return res.sendStatus(400);
     }
@@ -63,7 +62,7 @@ app.post('/people', jsonParser, function(req, res) {             //INSERT person
         textArea,
     };
     const collection = req.app.locals.collection;
-    collection.insertOne(person, function(err, result) {
+    collection.insertOne(person, function(err) {
         if(err) {
             return console.log(err);
         }
@@ -71,7 +70,7 @@ app.post('/people', jsonParser, function(req, res) {             //INSERT person
     });
 });
 
-app.put('/people', jsonParser, (req, res) => {                      //CHANGE person
+app.put('/people', jsonParser, (req, res) => {
     if(!req.body) {
         return res.status(400);
     }
@@ -93,7 +92,7 @@ app.put('/people', jsonParser, (req, res) => {                      //CHANGE per
     });
 });
 
-app.delete('/people/:id', function(req, res) {                     //DELETE person
+app.delete('/people/:id', function(req, res) {
     const id = req.params.id;
     console.log(id);
     const collection = req.app.locals.collection;
