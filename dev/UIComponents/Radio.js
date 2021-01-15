@@ -18,11 +18,10 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function RadioButtonsGroup ({takeStatus}) {
+function RadioButtonsGroup (props) {
+    const {takeStatus, oldStatus} = props;
     const classes = useStyles();
-    const [value, setValue] = React.useState('female');
-
-
+    const [value, setValue] = React.useState(oldStatus || '');
 
     function handleChange(e) {
         setValue(e.target.value);
@@ -51,7 +50,6 @@ function RadioButtonsGroup ({takeStatus}) {
                         control={<Radio color="primary" />}
                         label="unnecessary"
                         labelPlacement="start"
-                        // autoFocus={true}
                     />
                     <FormControlLabel
                         value="in work"

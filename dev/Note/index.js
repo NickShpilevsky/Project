@@ -4,7 +4,7 @@ import './style.css';
 
 import Form from '../Form';
 
-import { MyButton, MyRemoveButton} from '../UIComponents/MyButton';
+import { MyButton, MyRemoveButton } from '../UIComponents/MyButton';
 
 class Note extends PureComponent {
     constructor(props) {
@@ -16,7 +16,7 @@ class Note extends PureComponent {
             eMail: this.props.eMail || '',
             phoneNumber: this.props.phoneNumber || '',
             status: this.props.status || '',
-            category: this.props.category || '',
+            categories: this.props.categories || '',
             textArea: this.props.textArea || '',
             isChanging: false,
             buttonTitle: 'change Note',
@@ -28,25 +28,32 @@ class Note extends PureComponent {
         this.showAllText = this.showAllText.bind(this);
     }
 
+    showAllText() {
+        this.setState({
+            textButton: this.state.textButton === 'show more' ? 'hide' : 'show more',
+        });
+    }
+
     componentWillReceiveProps(nextProps) {
-        if(nextProps._id !== this.props._id ||
-            nextProps.name !== this.props.name ||
-            nextProps.company !== this.props.company ||
-            nextProps.eMail !== this.props.eMail ||
-            nextProps.phoneNumber !== this.props.phoneNumber ||
-            nextProps.status !== this.props.status ||
-            nextProps.category !== this.props.category ||
-            nextProps.textArea !== this.props.textArea) {
+        const { _id, name, company, eMail, phoneNumber, status, categories, textArea } = nextProps;
+        if(_id !== this.props._id ||
+            name !== this.props.name ||
+            company !== this.props.company ||
+            eMail !== this.props.eMail ||
+            phoneNumber !== this.props.phoneNumber ||
+            status !== this.props.status ||
+            categories !== this.props.categories ||
+            textArea !== this.props.textArea) {
             this.setState({
                 isChanging: false,
-                _id: nextProps._id,
-                name: nextProps.name,
-                company: nextProps.company,
-                eMail: nextProps.eMail,
-                phoneNumber: nextProps.phoneNumber,
-                status: nextProps.status,
-                category: nextProps.category,
-                textArea: nextProps.textArea,
+                _id: _id,
+                name: name,
+                company: company,
+                eMail: eMail,
+                phoneNumber: phoneNumber,
+                status: status,
+                categories: categories,
+                textArea: textArea,
             });
         }
     }
@@ -72,23 +79,18 @@ class Note extends PureComponent {
         fetch("http://localhost:5000/people/" + String(this.state._id), options);
     }
 
-    showAllText() {
-        this.setState({
-            textButton: this.state.textButton === 'show more' ? 'hide' : 'show more',
-        });
-    }
-
     render() {
+        const { showAllText, update, remove } = this;
         const { _id, updateNote } = this.props;
-        const { isChanging, buttonTitle, name, company, eMail, phoneNumber, status, category, textArea, photo, textButton } = this.state;
+        const { isChanging, buttonTitle, name, company, eMail, phoneNumber, status, categories, textArea, textButton } = this.state;
         return (
             <div key={_id} className="card">
                 {
                     isChanging ? (
                         <>
                             <div id="buttonsDiv">
-                                <MyButton action={this.update} title={buttonTitle} />
-                                <MyRemoveButton action={this.remove} title={'remove Note'} />
+                                <MyButton action={update} title={buttonTitle} />
+                                <MyRemoveButton action={remove} title="remove Note" />
                             </div>
                             <Form
                                 defaultId={_id}
@@ -97,43 +99,62 @@ class Note extends PureComponent {
                                 oldEMail={eMail}
                                 oldPhoneNumber={phoneNumber}
                                 oldStatus={status}
-                                oldCategory={category}
+                                oldCategories={categories}
                                 oldTextArea={textArea}
-                                sendButtonTitle={'change'}
-                                changeButtonTitle={this.update}
+                                sendButtonTitle="change"
+                                changeButtonTitle={update}
                                 action={updateNote}
                             />
                         </>
                     ) : (
-                        <div>
+                        <div id="wrapper">
                             <div className="both">
                                 <div className="leftWrapper">
-                                    <p>Name: {name}</p>
-                                    <p>Company: {company}</p>
-                                    <p>E-mail: {eMail}</p>
-                                    <p>Phone Number: {phoneNumber}</p>
+                                    <p>
+                                        <b>Name:</b><br />
+                                        {name.slice(0, 19) || 'none'}
+                                    </p>
+                                    <p>
+                                        <b>Company:</b><br />
+                                        {company.slice(0, 19) || 'none'}
+                                    </p>
+                                    <p>
+                                        <b>E-mail:</b><br />
+                                        {eMail.slice(0, 19) || 'none'}
+                                    </p>
+                                    <p>
+                                        <b>Phone Number:</b><br />
+                                        {phoneNumber.slice(0, 19) || 'none'}
+                                    </p>
                                 </div>
                                 <div className="rightWrapper">
-                                    <p>Status: {status}</p>
-                                    <p>Categories:
-                                        {
-                                            category === '' ? '' : category.map(item => (item + '\n'))
-                                        }
-                                    </p>
+                                    <p><b>Status:</b> {status}</p>
+                                    <p><b>Categories:</b> {categories.length ? categories.join(', ') : 'none'}</p>
                                     {
-                                        textButton === 'show more' ?(
-                                            <p>{textArea === '' || undefined ? 'note is empty' : textArea.slice(1, 15) + '...'}</p>
-                                        ) : (
-                                            <div className="noteText">{textArea}</div>
-                                        )
+                                        textArea ? (
+                                          <div id="note">
+                                              {
+                                                  textButton === 'show more' ? (
+                                                      <div>
+                                                          <div>{`${textArea.slice(0, 17)}${textArea.length <= 17 ? '' : '...'}`}</div>
+                                                          <div>{textArea.length <= 17 ? null : <MyButton action={showAllText} title={textButton} />}</div>
+                                                      </div>
+                                                    ) : (
+                                                      <div>
+                                                          <div>{textArea.length <= 17 ? null : <MyButton action={showAllText} title={textButton} />}</div>
+                                                          <div className="noteText">{textArea}</div>
+                                                      </div>
+                                                    )
+                                              }
+                                          </div>
+                                        ) : ('note is empty')
                                     }
-                                    <MyButton action={this.showAllText} title={textButton} />
                                 </div>
                             </div>
-                            <div id="buttonsDiv">
-                                <MyButton action={this.update} title={buttonTitle} />
-                                <MyRemoveButton action={this.remove} title={'remove Note'} />
-                            </div>
+                                <div id="buttonsDiv">
+                                    <MyButton action={update} title={buttonTitle} />
+                                    <MyRemoveButton action={remove} title="remove Note" />
+                                </div>
                         </div>
                     )
                 }

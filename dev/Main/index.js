@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import ReactDOM from 'react-dom';
 
 import Form from '../Form';
@@ -14,18 +14,18 @@ import { MyButton, MyRemoveButton } from '../UIComponents/MyButton';
 import CheckBox from '../UIComponents/CheckBox';
 import RadioButtonsGroup from '../UIComponents/Radio';
 
-class Home extends PureComponent {
+class Main extends PureComponent {
     constructor() {
         super();
         this.state = {
             peopleList: [],
-            filteredList: '',
-            buttonTitle: 'Add a Person',
+            filteredList: [],
+            formButtonTitle: 'Add a Person',
             showForm: false,
             showFilter: false,
-            filterButton: 'filter',
+            filterButtonTitle: 'filter',
             status: '',
-            category: [],
+            categories: [],
         };
         this.showForm = this.showForm.bind(this);
         this.showFilter = this.showFilter.bind(this);
@@ -36,13 +36,13 @@ class Home extends PureComponent {
         this.takeCategory = this.takeCategory.bind(this);
         this.filter = this.filter.bind(this);
         this.hideFilter = this.hideFilter.bind(this);
+        this.filterByCategory = this.filterByCategory.bind(this);
     }
 
     componentDidMount() {
         fetch("http://localhost:5000/people")
             .then(res => res.json())
-            .then(
-                (gotPeople) => {
+            .then((gotPeople) => {
                     this.setState({
                         peopleList: gotPeople,
                     });
@@ -52,22 +52,32 @@ class Home extends PureComponent {
                         error,
                     });
                 },
-            )
+            );
     }
 
     showForm() {
+        this.hideFilter();
         this.setState({
-            showFilter: this.state.showFilter ? this.showFilter() : null,
             showForm: !this.state.showForm,
-            buttonTitle: this.state.buttonTitle === 'Add a Person' ? 'Hide Form' : 'Add a Person',
+            formButtonTitle: this.state.buttonTitle === 'Add a Person' ? 'Hide Form' : 'Add a Person',
         });
     }
 
     showFilter() {
         this.setState({
-            showForm: this.state.showForm ? this.showForm() : null,
+            showForm: false,
             showFilter: !this.state.showFilter,
-            filterButton: this.state.filterButton === 'filter' ? 'Hide' : 'filter',
+            formButtonTitle: 'Add a Person',
+            filterButtonTitle: this.state.filterButtonTitle === 'filter' ? 'Hide form' : 'filter',
+        });
+    }
+
+    hideFilter() {
+        this.setState({
+            filterButtonTitle: 'filter',
+            showFilter: false,
+            filteredList: [],
+            categories: [],
         });
     }
 
@@ -99,118 +109,78 @@ class Home extends PureComponent {
 
     takeCategory(category) {
         this.setState({
-            category: [...this.state.category, category],
+            categories: [...this.state.categories, category],
+        });
+    }
+
+    filterByCategory(categories, array) {
+        array = array.filter(item => item.categories.length === categories.length);
+        console.log(array);
+        return array.filter(item => {
+            let tmp = 0;
+            item.categories.map(category => {
+                tmp += categories.indexOf(category);
+            });
+            return tmp >= 0;
         });
     }
 
     filter() {
-        const {peopleList, status, category} = this.state;
-        let array = [];
-        let statusArray = [];
-        let check;
-        if (category.length) {
-            for (let i = 0; i < peopleList.length; i++) {
-                check = 0;
-                if (peopleList[i].category.length === category.length) {
-                    for (let j = 0; j < peopleList[i].category.length; j++) {
-                        for (let t = 0; t < category.length; t++) {
-                            if (peopleList[i].category[j] === category[t]) {
-                                ++check;
-                            }
-                        }
-                    }
-                    if (peopleList[i].category.length === check) {
-                        array.push(peopleList[i]);
-                    }
-                }
-            }
-        }
-        if (status) {
-            let statusArray = peopleList;
-            if (category.length) {
-                statusArray = array;
-            }
-            array = [];
-            for (let i = 0; i < statusArray.length; i++) {
-                if (statusArray[i].status === status) {
-                    array.push(statusArray[i]);
-                }
-            }
-        }
+        const { peopleList, status, categories } = this.state;
+        let filteredList;
+        if (status) filteredList = peopleList.filter(item => item.status === status);
+        filteredList = categories && categories.length ? this.filterByCategory(categories, status ? filteredList : peopleList) : filteredList;
         this.setState({
-            filteredList: [...this.state.filteredList, ...array],
+            filteredList: [...filteredList],
         });
-    }
-
-    hideFilter() {
-        this.setState({
-            filteredList: '',
-            category: [],
-        });
-        this.showFilter();
+        if (!filteredList.length) alert('No such notes');
     }
 
     render() {
-        const { peopleList, buttonTitle, showForm, filterButton, showFilter, filteredList } = this.state;
+        const { showForm: showFormAction, showFilter: showFilterAction, addNote, takeStatus, takeCategory, filter, hideFilter, updateNote, removeNote } = this;
+        const { peopleList, formButtonTitle, showForm, filterButtonTitle, showFilter, filteredList } = this.state;
         return (
-            <div id="mainWrapper">
+            <div>
                 <AppBar position="static">
                     <Toolbar className="Bar">
                         <Typography variant="h6" color="inherit">
                             List
                         </Typography>
-                        <MyButton action={this.showForm} title={buttonTitle} />
-                        <MyButton className="filterButton" action={this.showFilter} title={filterButton} />
+                        {filteredList.length ? <MyRemoveButton action={hideFilter} title="hide filter" /> : <MyButton action={showFormAction} title={formButtonTitle} />}
+                        <MyButton className="filterButton" action={showFilterAction} title={filterButtonTitle} />
                     </Toolbar>
                 </AppBar>
                 {
                     showForm ? (
                         <Form
-                            showForm={this.showForm}
-                            action={this.addNote}
-                            sendButtonTitle={'create'}
+                            showForm={showFormAction}
+                            action={addNote}
+                            sendButtonTitle="create"
                         />
-                    ) : (
-                        null
-                    )
+                    ) : null
                 }
                 {
                     showFilter ? (
                         <div className="filterWrapper">
                             <div className="both">
-                            <RadioButtonsGroup takeStatus={this.takeStatus}/>
-                            <CheckBox takeCategory={this.takeCategory}/>
+                            <RadioButtonsGroup takeStatus={takeStatus}/>
+                            <CheckBox takeCategory={takeCategory}/>
                             </div>
-                            <div className="both">
-                                <MyButton action={this.filter} title={'filter'} />
-                                <MyRemoveButton action={this.hideFilter} title={'cancel'} />
-                            </div>
+                            <MyButton action={filter} title="filter" />
                         </div>
-                    ) : (
-                        null
-                    )
+                    ) : null
                 }
-                {
-                    filteredList === '' ? (
-                        <List peopleList={peopleList}
-                              updateNote={this.updateNote}
-                              showForm={this.showForm}
-                              removeNote={this.removeNote}
-                        />
-                    ) : (
-                        <List peopleList={filteredList}
-                              updateNote={this.updateNote}
-                              showForm={this.showForm}
-                              removeNote={this.removeNote}
-                        />
-                    )
-                }
+                <List peopleList={filteredList.length ? filteredList : peopleList}
+                      updateNote={updateNote}
+                      showForm={showFormAction}
+                      removeNote={removeNote}
+                />
             </div>
         )
     }
 }
 
 ReactDOM.render(
-    <Home />,
+    <Main />,
     document.getElementById('app'),
 );

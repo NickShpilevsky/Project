@@ -6,7 +6,7 @@ const List = ({ peopleList, updateNote, showForm, removeNote }) => {
         return (
             <React.Fragment>
                 {
-                    peopleList.map(note => (
+                    peopleList ? peopleList.map(note => (
                         <Note key={note._id}
                               _id={note._id}
                               name={note.name}
@@ -14,14 +14,14 @@ const List = ({ peopleList, updateNote, showForm, removeNote }) => {
                               eMail={note.eMail}
                               phoneNumber={note.phoneNumber}
                               status={note.status}
-                              category={note.category}
+                              categories={note.categories}
                               textArea={note.textArea}
                               updateNote={updateNote}
                               showForm={showForm}
                               removeNote={removeNote}
-                              sendButtonTitle={'create'}
+                              sendButtonTitle="create"
                         />
-                    ))
+                    )) : null
                 }
             </React.Fragment>
         )

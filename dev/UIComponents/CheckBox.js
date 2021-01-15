@@ -15,14 +15,13 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function CheckboxesGroup( {takeCategory} ) {
-    const classes = useStyles();
+export default function CheckboxesGroup(props) {
+    const { takeCategory, oldChecked } = props;
     const [state, setState] = React.useState({
-        Art: false,
-        Technologies: false,
-        Nature: false,
+        Art: oldChecked ? oldChecked.indexOf('Art') !== -1 : false,
+        Technologies: oldChecked ? oldChecked.indexOf('Technologies') !== -1 : false,
+        Nature: oldChecked ? oldChecked.indexOf('Nature') !== -1 : false,
     });
-
     const { Art, Technologies, Nature } = state;
 
     const handleChange = name => event => {
@@ -30,6 +29,7 @@ export default function CheckboxesGroup( {takeCategory} ) {
         takeCategory(name);
     };
 
+    const classes = useStyles();
     return (
         <div className={classes.root}>
             <FormControl component="fieldset" className={classes.formControl}>
