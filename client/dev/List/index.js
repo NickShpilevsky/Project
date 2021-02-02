@@ -6,7 +6,7 @@ const List = ({ peopleList, updateNote, showForm, removeNote }) => {
         return (
             <React.Fragment>
                 {
-                    peopleList ? peopleList.map(note => (
+                    peopleList && peopleList.length ? peopleList.map(note => (
                         <Note key={note._id}
                               _id={note._id}
                               name={note.name}

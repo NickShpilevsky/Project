@@ -34,7 +34,7 @@ class Note extends PureComponent {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillUpdate(nextProps) {
         const { _id, name, company, eMail, phoneNumber, status, categories, textArea } = nextProps;
         if(_id !== this.props._id ||
             name !== this.props.name ||

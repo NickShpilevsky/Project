@@ -78,10 +78,9 @@ class Form extends PureComponent {
     }
 
     render() {
-        const { categories, status } = this.state;
+        const { name, company, eMail, phoneNumber, textArea, categories, status } = this.state;
         const { sendButtonTitle } = this.props;
         let placeHolder = sendButtonTitle === 'create' ? 'enter' : 'change';
-        const { name, company, eMail, phoneNumber, textArea } = this.state;
         return (
             <div className="wrapper">
                 <form className="form" onSubmit={this.submitForm}>

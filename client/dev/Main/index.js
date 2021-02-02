@@ -37,22 +37,43 @@ class Main extends PureComponent {
         this.filter = this.filter.bind(this);
         this.hideFilter = this.hideFilter.bind(this);
         this.filterByCategory = this.filterByCategory.bind(this);
+        this.readChunks = this.readChunks.bind(this);
     }
 
     componentDidMount() {
         fetch("http://localhost:5000/people")
-            .then(res => res.json())
-            .then((gotPeople) => {
-                    this.setState({
-                        peopleList: gotPeople,
-                    });
-                },
-                (error) => {
-                    this.setState({
-                        error,
-                    });
-                },
-            );
+          .then((response) => {
+              return this.readChunks(response.body.getReader());
+          })
+          .then(({receivedLength, chunks}) => {
+              let [chunksAll, position] = [new Uint8Array(receivedLength), 0];
+              for (let chunk of chunks) {
+                  chunksAll.set(chunk, position);
+                  position += chunk.length;
+              }
+              return new TextDecoder("utf-8").decode(chunksAll);
+          }, error => {
+              console.log(error);
+              this.setState({
+                  peopleList: [],
+              })
+          })
+          .then(data => {
+              this.setState({
+                  peopleList: JSON.parse(data),
+              })
+          });
+    }
+
+    async readChunks(reader) {
+        let [chunks, receivedLength] = [[], 0];
+        while(true) {
+            const {done, value} = await reader.read();
+            if (done) break;
+            chunks.push(value);
+            receivedLength += value.length;
+        }
+        return {receivedLength, chunks};
     }
 
     showForm() {

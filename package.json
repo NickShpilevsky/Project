@@ -1,42 +1,28 @@
 {
-  "name": "Project",
+  "name": "back-end",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "webpack-dev-server --content-base site --port 3000",
-    "build": "rm -rf site && cross-env NODE_ENV=production webpack"
+  "main": "server.js",
+  "engines": {
+    "node": "14.x"
   },
-  "keywords": [],
+  "scripts": {
+    "start": "npm install && cross-env NODE_ENV=production && node server.js"
+  },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "@babel/preset-react": "^7.0.0",
-    "babel-eslint": "^10.0.2",
-    "babel-loader": "^8.0.6",
-    "copy-webpack-plugin": "^5.0.4",
-    "cross-env": "^5.2.0",
-    "css-loader": "^3.1.0",
-    "eslint": "^6.1.0",
-    "eslint-config-airbnb": "^17.1.1",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.14.3",
-    "style-loader": "^0.23.1",
-    "webpack": "^4.45.0",
-    "webpack-cli": "^3.3.6",
-    "webpack-dev-server": "^3.7.2"
-  },
   "dependencies": {
-    "@material-ui/core": "^4.3.0",
-    "@material-ui/icons": "^4.2.1",
-    "@material-ui/styles": "^4.3.0",
-    "chokidar": "^3.5.0",
-    "eslint-webpack-plugin": "^2.4.1",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0"
+    "body-parser": "^1.19.0",
+    "concurrently": "^5.3.0",
+    "config": "^3.3.3",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "heroku": "^7.47.7",
+    "mongodb": "^3.6.3",
+    "mongoose": "^5.11.12",
+    "node-core-lib": "^0.11.11"
   },
   "proxy": 5000
 }
