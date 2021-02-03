@@ -1,9 +1,9 @@
 # React-MongoDB-Project
 made by Nick Shpilevsky
 
-This project was created to learn and practice React and MongoDB databases.  
+This project was created to learn and practice React and remote MongoDB database.
 I created Back-End and used Material-UI library and Webpack.
-All notes are stored in remote database, so they don't disappear after reloading page.  They are got from remote databse by chunks in readable stream.
+All notes are stored in remote database, so they don't disappear after reloading page. They are got from remote databse by chunks in readable stream.
 There is an ability to filter notes to find ones you need by status and categories.
 
 # Usage
